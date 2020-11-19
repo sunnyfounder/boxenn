@@ -11,17 +11,49 @@ module Homebrew
 
     option :source, default: -> { nil }
 
-    define_method(:find_by_identity) do |**keyword_args|
-      keywords = keyword_args.keys
-      raise ::Homebrew::InvalidPrimaryKey.new(class_name: self.class.name, provided: keywords, required: primary_key) unless (keywords - primary_key | primary_key - keywords).empty?
+    option :factory, default: -> { nil }
 
-      pk_hash = keyword_args.slice(*primary_key)
-      source.find_by(pk_hash)
+    option :record_mapper, default: -> { nil }
+
+    def find_by_identity(**attributes)
+      non_primary_keys_provided = !(attributes.keys - primary_key).empty?
+      raise ::Homebrew::InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if non_primary_keys_provided
+
+      record = retrieve_record(attributes)
+      build(record)
     end
 
-    # def find_by_identity(id:)
-    #   source.find_by(id: id)
-    # end
+    def find_by_query(query)
+      records = query.collect
+      records.map { |record| build(record) }
+    end
+
+    def save(entity)
+      attributes = adapt(entity)
+      save_record(attributes)
+    end
+
+    protected
+
+    def retrieve_record(**attributes)
+      primary_keys_missing = !(primary_key - attributes.keys).empty?
+      raise ::Homebrew::InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if primary_keys_missing
+
+      pk_hash = attributes.slice(*primary_key)
+      record = source.find_by(pk_hash)
+    end
+
+    def save_record(**attributes)
+      source.save(attributes)
+    end
+
+    def build(record)
+      factory.build(record)
+    end
+
+    def adapt(entity)
+      record_mapper.build(entity)
+    end
 
     class << self 
       def primary_key(*pk)
