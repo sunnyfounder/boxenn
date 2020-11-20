@@ -1,8 +1,8 @@
 require 'dry/initializer'
 
-require 'homebrew/errors'
+require 'boxenn/errors'
 
-module Homebrew
+module Boxenn
   class Repository
 
     extend Dry::Initializer
@@ -17,7 +17,7 @@ module Homebrew
 
     def find_by_identity(**attributes)
       non_primary_keys_provided = !(attributes.keys - primary_key).empty?
-      raise ::Homebrew::InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if non_primary_keys_provided
+      raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if non_primary_keys_provided
 
       record = retrieve_record(attributes)
       build(record)
@@ -37,7 +37,7 @@ module Homebrew
 
     def retrieve_record(**attributes)
       primary_keys_missing = !(primary_key - attributes.keys).empty?
-      raise ::Homebrew::InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if primary_keys_missing
+      raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if primary_keys_missing
 
       pk_hash = attributes.slice(*primary_key)
       record = source.find_by(pk_hash)

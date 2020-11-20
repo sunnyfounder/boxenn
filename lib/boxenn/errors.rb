@@ -1,4 +1,4 @@
-module Homebrew
+module Boxenn
   class InvalidPrimaryKey < StandardError
     def initialize(**args)
       super(_message(**args))

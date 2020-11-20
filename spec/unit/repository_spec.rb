@@ -1,9 +1,9 @@
-require 'homebrew/repository'
+require 'boxenn/repository'
 
-RSpec.describe Homebrew::Repository do
+RSpec.describe Boxenn::Repository do
 
   describe '#find_by_identity' do
-    let(:repository) { Homebrew::Repository.new(source: source, primary_key: primary_key, factory: factory) }
+    let(:repository) { Boxenn::Repository.new(source: source, primary_key: primary_key, factory: factory) }
     let(:factory) { spy('factory', build: 'entity') }
     let(:source) { spy('source wrapper', find_by: 'record') }
     let(:primary_key) { [:name] }
@@ -17,12 +17,12 @@ RSpec.describe Homebrew::Repository do
 
       context 'rejects missing primary keys' do
         let(:primary_key) { [] }
-        it { is_expected.to raise_error(Homebrew::InvalidPrimaryKey) }
+        it { is_expected.to raise_error(Boxenn::InvalidPrimaryKey) }
       end
 
       context 'rejects unnecessary primary keys' do
         let(:primary_key) { [:id, :name] }
-        it { is_expected.to raise_error(Homebrew::InvalidPrimaryKey) }
+        it { is_expected.to raise_error(Boxenn::InvalidPrimaryKey) }
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Homebrew::Repository do
       end
 
       context 'accepts not defined and defaults to :id' do
-        let(:repository) { Homebrew::Repository.new(source: source, factory: factory) }
+        let(:repository) { Boxenn::Repository.new(source: source, factory: factory) }
 
         specify do
           repository.find_by_identity(id: 1)
@@ -70,7 +70,7 @@ RSpec.describe Homebrew::Repository do
   end
 
   describe '#find_by_query' do
-    let(:repository) { Homebrew::Repository.new(factory: factory) }
+    let(:repository) { Boxenn::Repository.new(factory: factory) }
     let(:factory) { spy('factory', build: 'entity') }
     let(:query) { spy('query', collect: ['record', 'record']) }
 
@@ -90,7 +90,7 @@ RSpec.describe Homebrew::Repository do
   end
 
   describe '#save' do
-    let(:repository) { Homebrew::Repository.new(source: source, record_mapper: record_mapper) }
+    let(:repository) { Boxenn::Repository.new(source: source, record_mapper: record_mapper) }
     let(:record_mapper) { spy('record_mapper', build: { hash: 'attributes' }) }
     let(:source) { spy('source wrapper', save: 'result') }
     let(:entity) { spy('entity', keys: [:id], id: 'id') }
