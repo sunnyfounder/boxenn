@@ -1,9 +1,11 @@
 require 'ostruct'
 require 'dry/monads/all'
 require 'wisper'
+require 'dry/initializer'
 
 module Boxenn
   class Usecase
+    extend Dry::Initializer
     include Wisper::Publisher
     include Dry::Monads
     include Dry::Monads::Do
