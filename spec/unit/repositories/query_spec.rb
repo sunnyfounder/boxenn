@@ -1,9 +1,9 @@
-require 'boxenn/query'
+require 'boxenn/repositories/query'
 
-RSpec.describe Boxenn::Query do
+RSpec.describe Boxenn::Repositories::Query do
 
   describe '#collect' do
-    let(:query) { Boxenn::Query.new }
+    let(:query) { Boxenn::Repositories::Query.new }
 
     context 'when collect is not override' do
       subject { -> { query.collect } }
