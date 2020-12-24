@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'dry-initializer', '~> 3.0'
+  spec.add_runtime_dependency 'dry-struct', '~> 1.3.0'
   spec.add_runtime_dependency 'dry-monads', '~> 1.3'
   spec.add_runtime_dependency 'wisper', '2.0.0'
 end
