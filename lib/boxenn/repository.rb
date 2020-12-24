@@ -7,17 +7,15 @@ module Boxenn
 
     extend Dry::Initializer
 
-    option :primary_key, default: -> { self.class.__primary_key__ }, type: method(:Array)
-
-    option :source, default: -> { nil }
+    option :source_wrapper, default: -> { nil }
 
     option :factory, default: -> { nil }
 
     option :record_mapper, default: -> { nil }
 
     def find_by_identity(**attributes)
-      non_primary_keys_provided = !(attributes.keys - primary_key).empty?
-      raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if non_primary_keys_provided
+      non_primary_keys_provided = (attributes.keys - factory.primary_keys).empty? && (factory.primary_keys - attributes.keys).empty?
+      raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: factory.primary_keys) unless non_primary_keys_provided
 
       record = retrieve_record(attributes)
       build(record)
@@ -30,21 +28,18 @@ module Boxenn
 
     def save(entity)
       attributes = adapt(entity)
-      save_record(attributes)
+      save_record(entity.primary_keys_hash, attributes)
     end
 
     protected
 
     def retrieve_record(**attributes)
-      primary_keys_missing = !(primary_key - attributes.keys).empty?
-      raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: primary_key) if primary_keys_missing
-
-      pk_hash = attributes.slice(*primary_key)
-      record = source.find_by(pk_hash)
+      pk_hash = attributes.slice(*factory.primary_keys)
+      record = source_wrapper.find_by(pk_hash)
     end
 
-    def save_record(**attributes)
-      source.save(attributes)
+    def save_record(primary_keys, attributes)
+      source_wrapper.save(primary_keys, attributes)
     end
 
     def build(record)
@@ -53,16 +48,6 @@ module Boxenn
 
     def adapt(entity)
       record_mapper.build(entity)
-    end
-
-    class << self 
-      def primary_key(*pk)
-        @pk = Array(pk)
-      end
-
-      def __primary_key__
-        @pk ||= [:id]
-      end
     end
   end
 end

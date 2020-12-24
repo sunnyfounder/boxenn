@@ -3,25 +3,24 @@ require 'boxenn/repository'
 RSpec.describe Boxenn::Repository do
 
   describe '#find_by_identity' do
-    let(:repository) { Boxenn::Repository.new(source: source, primary_key: primary_key, factory: factory) }
-    let(:factory) { spy('factory', build: 'entity') }
-    let(:source) { spy('source wrapper', find_by: 'record') }
-    let(:primary_key) { [:name] }
-
     context 'when method is called with keywords arguments' do
-      subject { -> { repository.find_by_identity(name: 1) } }
-
       context 'accepts matching primary keys' do
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:name] }
+
+        subject { -> { repository.find_by_identity(name: 1) } }
         it { is_expected.not_to raise_error }
       end
 
-      context 'rejects missing primary keys' do
-        let(:primary_key) { [] }
-        it { is_expected.to raise_error(Boxenn::InvalidPrimaryKey) }
-      end
-
       context 'rejects unnecessary primary keys' do
-        let(:primary_key) { [:id, :name] }
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:id, :name] }
+
+        subject { -> { repository.find_by_identity(name: 1) } }
         it { is_expected.to raise_error(Boxenn::InvalidPrimaryKey) }
       end
     end
@@ -29,33 +28,46 @@ RSpec.describe Boxenn::Repository do
     context 'when matching primary key is set' do
 
       context 'accepts single primary key' do
-        let(:primary_key) { [:name] }
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:name] }
 
         specify do
           repository.find_by_identity(name: 'Name')
-          expect(source).to have_received(:find_by).with(name: 'Name')
+          expect(source_wrapper).to have_received(:find_by).with(name: 'Name')
         end
       end
 
       context 'accepts multiple primary key' do
-        let(:primary_key) { [:id, :name] }
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:id, :name] }
 
         specify do
           repository.find_by_identity(id: 1, name: 'Name')
-          expect(source).to have_received(:find_by).with(id: 1, name: 'Name')
+          expect(source_wrapper).to have_received(:find_by).with(id: 1, name: 'Name')
         end
       end
 
       context 'accepts not defined and defaults to :id' do
-        let(:repository) { Boxenn::Repository.new(source: source, factory: factory) }
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:id] }
 
         specify do
           repository.find_by_identity(id: 1)
-          expect(source).to have_received(:find_by).with(id: 1)
+          expect(source_wrapper).to have_received(:find_by).with(id: 1)
         end
       end
 
       context 'delegates factory to build' do
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:name] }
         specify do
           repository.find_by_identity(name: 'Name')
           expect(factory).to have_received(:build).with('record')
@@ -63,6 +75,11 @@ RSpec.describe Boxenn::Repository do
       end
 
       context 'returns factory result' do
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:primary_keys) { [:name] }
+
         subject { repository.find_by_identity(name: 'Name') }
         it { is_expected.to eq('entity') }
       end
@@ -90,10 +107,10 @@ RSpec.describe Boxenn::Repository do
   end
 
   describe '#save' do
-    let(:repository) { Boxenn::Repository.new(source: source, record_mapper: record_mapper) }
+    let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, record_mapper: record_mapper) }
     let(:record_mapper) { spy('record_mapper', build: { hash: 'attributes' }) }
-    let(:source) { spy('source wrapper', save: 'result') }
-    let(:entity) { spy('entity', keys: [:id], id: 'id') }
+    let(:source_wrapper) { spy('source wrapper', save: 'result') }
+    let(:entity) { spy('entity', primary_keys_hash: { id: 1 }, id: 'id') }
 
     context 'when entity is provided' do
       before { repository.save(entity) }
@@ -103,7 +120,7 @@ RSpec.describe Boxenn::Repository do
       end
 
       context 'requires the source mapper to store record with updated attributes' do
-        it { expect(source).to have_received(:save).with({ hash: 'attributes' }) }
+        it { expect(source_wrapper).to have_received(:save).with({ id: 1 }, { hash: 'attributes' }) }
       end
 
       context 'returns the result' do
