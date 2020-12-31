@@ -15,6 +15,10 @@ module Boxenn
       def save(primary_keys, attributes)
         raise NotImplementedError
       end
+
+      def destroy(primary_keys_hash)
+        raise NotImplementedError
+      end
     end
   end
 end

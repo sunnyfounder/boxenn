@@ -31,6 +31,10 @@ module Boxenn
       save_record(entity.primary_keys_hash, attributes)
     end
 
+    def destroy(entity)
+      source_wrapper.destroy(entity.primary_keys_hash)
+    end
+
     protected
 
     def retrieve_record(**attributes)
