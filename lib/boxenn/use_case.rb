@@ -4,7 +4,7 @@ require 'wisper'
 require 'dry/initializer'
 
 module Boxenn
-  class Usecase
+  class UseCase
     extend Dry::Initializer
     include Wisper::Publisher
     include Dry::Monads
