@@ -15,7 +15,7 @@ module Boxenn
     rescue Dry::Monads::Do::Halt
       raise
     rescue StandardError => e
-      Failure(e)
+      Failure([e])
     end
 
     protected
