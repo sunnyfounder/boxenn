@@ -15,7 +15,7 @@ module Boxenn
     rescue Dry::Monads::Do::Halt
       raise
     rescue StandardError => e
-      Failure.new(e, trace: e.backtrace.first)
+      Failure.new([e], trace: e.backtrace.first)
     end
 
     protected
