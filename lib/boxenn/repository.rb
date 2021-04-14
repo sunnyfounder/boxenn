@@ -18,7 +18,7 @@ module Boxenn
       raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: factory.primary_keys) unless non_primary_keys_provided
 
       record = retrieve_record(attributes)
-      build(record)
+      record.nil? ? nil : build(record)
     end
 
     def find_by_query(query)
