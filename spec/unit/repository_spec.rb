@@ -108,19 +108,24 @@ RSpec.describe Boxenn::Repository do
 
   describe '#save' do
     let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, record_mapper: record_mapper) }
-    let(:record_mapper) { spy('record_mapper', build: { hash: 'attributes' }) }
+    let(:record_mapper) do
+      record_mapper = spy('record_mapper')
+      allow(record_mapper).to receive(:build).with({ id: 1 }).and_return({ id: 1 })
+      allow(record_mapper).to receive(:build).with({ id: 1, hash: 'attributes' }).and_return({ id: 1, schema: 'attributes' })
+      record_mapper
+    end
     let(:source_wrapper) { spy('source wrapper', save: 'result') }
-    let(:entity) { spy('entity', primary_keys_hash: { id: 1 }, id: 'id') }
+    let(:entity) { spy('entity', primary_keys_hash: { id: 1 }, to_h: { id: 1, hash: 'attributes' }) }
 
     context 'when entity is provided' do
       before { repository.save(entity) }
 
       context 'maps the entity into an attribute hash' do
-        it { expect(record_mapper).to have_received(:build).with(entity) }
+        it { expect(record_mapper).to have_received(:build).twice }
       end
 
       context 'requires the source mapper to store record with updated attributes' do
-        it { expect(source_wrapper).to have_received(:save).with({ id: 1 }, { hash: 'attributes' }) }
+        it { expect(source_wrapper).to have_received(:save).with({ id: 1 }, { id: 1, schema: 'attributes' }) }
       end
 
       context 'returns the result' do

@@ -27,8 +27,9 @@ module Boxenn
     end
 
     def save(entity)
-      attributes = adapt(entity)
-      save_record(entity.primary_keys_hash, attributes)
+      attributes = adapt(entity.to_h)
+      identity = adapt(entity.primary_keys_hash)
+      save_record(identity, attributes)
     end
 
     def destroy(entity)
@@ -50,8 +51,8 @@ module Boxenn
       factory.build(record)
     end
 
-    def adapt(entity)
-      record_mapper.build(entity)
+    def adapt(hash)
+      record_mapper.build(hash)
     end
   end
 end
