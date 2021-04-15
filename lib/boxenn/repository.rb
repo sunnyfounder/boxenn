@@ -27,18 +27,21 @@ module Boxenn
     end
 
     def save(entity)
-      attributes = adapt(entity)
-      save_record(entity.primary_keys_hash, attributes)
+      attributes = adapt(entity.to_h)
+      identity = adapt(entity.primary_keys_hash)
+      save_record(identity, attributes)
     end
 
     def destroy(entity)
-      source_wrapper.destroy(entity.primary_keys_hash)
+      identity = adapt(entity.primary_keys_hash)
+      source_wrapper.destroy(identity)
     end
 
     protected
 
     def retrieve_record(**attributes)
-      pk_hash = attributes.slice(*factory.primary_keys)
+      hash = attributes.slice(*factory.primary_keys)
+      pk_hash = adapt(hash)
       record = source_wrapper.find_by(pk_hash)
     end
 
@@ -50,8 +53,8 @@ module Boxenn
       factory.build(record)
     end
 
-    def adapt(entity)
-      record_mapper.build(entity)
+    def adapt(hash)
+      record_mapper.build(hash)
     end
   end
 end
