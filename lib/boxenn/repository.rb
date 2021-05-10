@@ -26,15 +26,19 @@ module Boxenn
       records.map { |record| build(record) }
     end
 
-    def save(entity)
-      attributes = adapt(entity.to_h)
-      identity = adapt(entity.primary_keys_hash)
-      save_record(identity, attributes)
+    def save(entities)
+      Array(entities).each do |entity|
+        attributes = adapt(entity.to_h)
+        identity = adapt(entity.primary_keys_hash)
+        save_record(identity, attributes)
+      end
     end
 
-    def destroy(entity)
-      identity = adapt(entity.primary_keys_hash)
-      source_wrapper.destroy(identity)
+    def destroy(entities)
+      Array(entities).each do |entity|
+        identity = adapt(entity.primary_keys_hash)
+        source_wrapper.destroy(identity)
+      end
     end
 
     protected

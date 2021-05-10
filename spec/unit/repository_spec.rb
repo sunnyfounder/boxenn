@@ -117,26 +117,30 @@ RSpec.describe Boxenn::Repository do
     let(:record_mapper) do
       record_mapper = spy('record_mapper')
       allow(record_mapper).to receive(:build).with({ id: 1 }).and_return({ id: 1 })
-      allow(record_mapper).to receive(:build).with({ id: 1, hash: 'attributes' }).and_return({ id: 1, schema: 'attributes' })
+      allow(record_mapper).to receive(:build).with({ id: 1, hash: 'attributes1' }).and_return({ id: 1, schema: 'attributes1' })
+      allow(record_mapper).to receive(:build).with({ id: 2 }).and_return({ id: 2 })
+      allow(record_mapper).to receive(:build).with({ id: 2, hash: 'attributes2' }).and_return({ id: 2, schema: 'attributes2' })
       record_mapper
     end
     let(:source_wrapper) { spy('source wrapper', save: 'result') }
-    let(:entity) { spy('entity', primary_keys_hash: { id: 1 }, to_h: { id: 1, hash: 'attributes' }) }
+    let(:entity1) { spy('entity', primary_keys_hash: { id: 1 }, to_h: { id: 1, hash: 'attributes1' }) }
+    let(:entity2) { spy('entity', primary_keys_hash: { id: 2 }, to_h: { id: 2, hash: 'attributes2' }) }
 
     context 'when entity is provided' do
-      before { repository.save(entity) }
+      before { repository.save([entity1, entity2]) }
 
       context 'maps the entity into an attribute hash' do
-        it { expect(record_mapper).to have_received(:build).twice }
+        it { expect(record_mapper).to have_received(:build).exactly(4).times }
       end
 
       context 'requires the source mapper to store record with updated attributes' do
-        it { expect(source_wrapper).to have_received(:save).with({ id: 1 }, { id: 1, schema: 'attributes' }) }
+        it { expect(source_wrapper).to have_received(:save).with({ id: 1 }, { id: 1, schema: 'attributes1' }) }
+        it { expect(source_wrapper).to have_received(:save).with({ id: 2 }, { id: 2, schema: 'attributes2' }) }
       end
 
       context 'returns the result' do
-        subject { repository.save(entity) }
-        it { is_expected.to eq('result') }
+        subject { repository.save([entity1, entity2]) }
+        it { is_expected.to eq([entity1, entity2]) }
       end
     end
   end
