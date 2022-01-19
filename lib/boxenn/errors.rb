@@ -7,7 +7,7 @@ module Boxenn
     private
 
     def _message(class_name:, provided:, required:)
-      if (required - provided)
+      if required - provided
         "Primary Key #{required - provided} is missing for class #{class_name.inspect}"
       else
         "#{provided - required} is not a primary key for class #{class_name.inspect}"

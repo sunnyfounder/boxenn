@@ -3,10 +3,9 @@ require 'dry/initializer'
 module Boxenn
   module Repositories
     class Factory
-
       extend Dry::Initializer
 
-      param :entity, default: proc { nil }
+      param :entity, default: proc {}
 
       def build
         raise NotImplementedError

@@ -4,14 +4,13 @@ require 'boxenn/errors'
 
 module Boxenn
   class Repository
-
     extend Dry::Initializer
 
-    option :source_wrapper, default: -> { nil }
+    option :source_wrapper, default: -> {}
 
-    option :factory, default: -> { nil }
+    option :factory, default: -> {}
 
-    option :record_mapper, default: -> { nil }
+    option :record_mapper, default: -> {}
 
     def find_by_identity(**attributes)
       non_primary_keys_provided = (attributes.keys - factory.primary_keys).empty? && (factory.primary_keys - attributes.keys).empty?

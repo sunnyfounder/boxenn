@@ -8,12 +8,13 @@ Gem::Specification.new do |spec|
   spec.summary     = 'A ddd-oriented infrastructure for ruby/rails projects based on the dry-rb ecosystem.'
   spec.authors     = ['Michael Fu', 'Oscar', 'Joseph']
   spec.email       = ['oscarada87@gmail.com']
-  spec.files       = Dir["CHANGELOG.md", "LICENSE", "README.md", "boxenn.gemspec", "lib/**/*"]
+  spec.files       = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'boxenn.gemspec', 'lib/**/*']
   spec.required_ruby_version = '>= 2.6.0'
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'dry-initializer', '~> 3.0'
-  spec.add_runtime_dependency 'dry-struct', '~> 1.3.0'
   spec.add_runtime_dependency 'dry-monads', '~> 1.3'
+  spec.add_runtime_dependency 'dry-struct', '~> 1.3.0'
   spec.add_runtime_dependency 'wisper', '2.0.0'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
