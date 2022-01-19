@@ -1,0 +1,65 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
+# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+
+name: Unit Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      ssh_private_key:
+        required: true
+      codecov_token:
+        required: true
+
+jobs:
+  rspec-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+
+    - name: Run SSH Agent
+      uses: webfactory/ssh-agent@v0.4.1
+      with:
+        ssh-private-key: ${{ secrets.ssh_private_key }}
+
+    - name: Check for cache
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        upload-chunk-size: 3000000
+        restore-keys: |
+          ${{ runner.os }}-gems-
+    - name: Install dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3 --with=test
+
+    - name: Run unit tests
+      env:
+        RAILS_ENV: test
+      run: >-
+        bundle exec rspec
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      env:
+        RAILS_ENV: test
+      with:
+        token: ${{ secrets.codecov_token }}
+        directory: ./coverage
+        fail_ci_if_error: true
+        flags: unittests
+        name: codecov-boxenn
+        verbose: true
