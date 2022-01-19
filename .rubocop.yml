@@ -61,3 +61,6 @@ Style/TrailingCommaInArrayLiteral:
 # Enforce comma on multiline to ensure fixed git diffs
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: 'consistent_comma'
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never

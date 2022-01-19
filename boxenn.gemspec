@@ -5,10 +5,12 @@ require 'boxenn/version'
 Gem::Specification.new do |spec|
   spec.name        = 'boxenn'
   spec.version     = Boxenn::VERSION.dup
+  spec.license     = 'MIT'
   spec.summary     = 'A ddd-oriented infrastructure for ruby/rails projects based on the dry-rb ecosystem.'
   spec.authors     = ['Michael Fu', 'Oscar', 'Joseph']
   spec.email       = ['oscarada87@gmail.com']
   spec.files       = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'boxenn.gemspec', 'lib/**/*']
+  spec.homepage    = 'https://github.com/sunnyfounder/boxenn'
   spec.required_ruby_version = '>= 2.6.0'
   spec.require_paths = ['lib']
 
