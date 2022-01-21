@@ -4,6 +4,9 @@ require 'wisper'
 require 'dry/initializer'
 
 module Boxenn
+  ##
+  # 這個類別是在 Domain(Use case) 層中負責處理業務邏輯的基礎類別
+
   class UseCase
     extend Dry::Initializer
     include Wisper::Publisher
