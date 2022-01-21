@@ -3,10 +3,9 @@ require 'dry/initializer'
 module Boxenn
   module Repositories
     class SourceWrapper
-
       extend Dry::Initializer
 
-      param :source, default: proc { nil }
+      param :source, default: proc {}
 
       def find_by(primary_keys)
         raise NotImplementedError

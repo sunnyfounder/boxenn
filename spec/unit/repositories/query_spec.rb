@@ -1,7 +1,6 @@
 require 'boxenn/repositories/query'
 
 RSpec.describe Boxenn::Repositories::Query do
-
   describe '#collect' do
     let(:query) { Boxenn::Repositories::Query.new }
 

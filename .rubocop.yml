@@ -1,0 +1,66 @@
+inherit_from: .rubocop_todo.yml
+
+require: rubocop-rspec
+
+AllCops:
+  Exclude:
+    - .git/**/*
+    - bin/**/*
+    - examples/**/*
+    - tmp/**/*
+    - vendor/**/*
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 180
+
+Metrics/BlockLength:
+  Max: 30 # default 25
+  CountAsOne:
+    - 'heredoc'
+    - 'array'
+    - 'hash'
+  IgnoredMethods:
+    - 'refine'
+    - 'describe'
+
+Metrics/MethodLength:
+  Max: 10 # default 10
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+
+# Message Spies style
+RSpec/MessageSpies:
+  EnforcedStyle: have_received
+
+# Prevent redundent expectations
+RSpec/MultipleExpectations:
+  Max: 4 # default 2
+
+# Limit number of Memorized Helpers
+RSpec/MultipleMemoizedHelpers:
+  Max: 10 # default 5
+
+RSpec/ExampleLength:
+  Max: 10 # default 5
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+
+# Enforce comma on multiline to ensure fixed git diffs
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: 'consistent_comma'
+
+# Enforce comma on multiline to ensure fixed git diffs
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: 'consistent_comma'
+
+# Enforce comma on multiline to ensure fixed git diffs
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: 'consistent_comma'
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never

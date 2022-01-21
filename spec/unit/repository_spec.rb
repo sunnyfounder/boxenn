@@ -1,33 +1,33 @@
 require 'boxenn/repository'
 
 RSpec.describe Boxenn::Repository do
-
   describe '#find_by_identity' do
     context 'when method is called with keywords arguments' do
       context 'accepts matching primary keys' do
+        subject { -> { repository.find_by_identity(name: 1) } }
+
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
         let(:record_mapper) { spy('record mapper', build: 'entity') }
         let(:primary_keys) { [:name] }
 
-        subject { -> { repository.find_by_identity(name: 1) } }
         it { is_expected.not_to raise_error }
       end
 
       context 'rejects unnecessary primary keys' do
+        subject { -> { repository.find_by_identity(name: 1) } }
+
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
-        let(:primary_keys) { [:id, :name] }
+        let(:primary_keys) { %i[id name] }
 
-        subject { -> { repository.find_by_identity(name: 1) } }
         it { is_expected.to raise_error(Boxenn::InvalidPrimaryKey) }
       end
     end
 
     context 'when matching primary key is set' do
-
       context 'accepts single primary key' do
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
@@ -46,7 +46,7 @@ RSpec.describe Boxenn::Repository do
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
         let(:record_mapper) { spy('record mapper', build: { id: 1, name: 'Name' }) }
-        let(:primary_keys) { [:id, :name] }
+        let(:primary_keys) { %i[id name] }
 
         specify do
           repository.find_by_identity(id: 1, name: 'Name')
@@ -58,7 +58,7 @@ RSpec.describe Boxenn::Repository do
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
-        let(:record_mapper) { spy('record mapper', build: { id: 1}) }
+        let(:record_mapper) { spy('record mapper', build: { id: 1 }) }
         let(:primary_keys) { [:id] }
 
         specify do
@@ -71,8 +71,9 @@ RSpec.describe Boxenn::Repository do
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
-        let(:record_mapper) { spy('record mapper', build: { name: 'Name'}) }
+        let(:record_mapper) { spy('record mapper', build: { name: 'Name' }) }
         let(:primary_keys) { [:name] }
+
         specify do
           repository.find_by_identity(name: 'Name')
           expect(factory).to have_received(:build).with('record')
@@ -80,13 +81,14 @@ RSpec.describe Boxenn::Repository do
       end
 
       context 'returns factory result' do
+        subject { repository.find_by_identity(name: 'Name') }
+
         let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
         let(:factory) { spy('factory', build: 'entity', primary_keys: primary_keys) }
         let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
-        let(:record_mapper) { spy('record mapper', build: { name: 'Name'}) }
+        let(:record_mapper) { spy('record mapper', build: { name: 'Name' }) }
         let(:primary_keys) { [:name] }
 
-        subject { repository.find_by_identity(name: 'Name') }
         it { is_expected.to eq('entity') }
       end
     end
@@ -95,7 +97,7 @@ RSpec.describe Boxenn::Repository do
   describe '#find_by_query' do
     let(:repository) { Boxenn::Repository.new(factory: factory) }
     let(:factory) { spy('factory', build: 'entity') }
-    let(:query) { spy('query', collect: ['record', 'record']) }
+    let(:query) { spy('query', collect: %w[record record]) }
 
     context 'when an Enumerable is provided' do
       context 'collects records from relation' do
@@ -107,6 +109,7 @@ RSpec.describe Boxenn::Repository do
 
       context 'returns an array of entities' do
         subject { repository.find_by_query(query) }
+
         it { is_expected.to contain_exactly('entity', 'entity') }
       end
     end
@@ -140,6 +143,7 @@ RSpec.describe Boxenn::Repository do
 
       context 'returns the result' do
         subject { repository.save([entity1, entity2]) }
+
         it { is_expected.to eq([entity1, entity2]) }
       end
     end
