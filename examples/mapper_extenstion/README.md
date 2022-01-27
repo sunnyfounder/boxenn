@@ -1,4 +1,5 @@
 # A mapper extension
+
 It can help you build mapper fast and simple.
 
 ## Usage
@@ -30,7 +31,9 @@ class SimpleMap < MapperExtension
   end
 end
 ```
+
 Above example will turn
+
 ```ruby
 {
   a: 123,
@@ -42,6 +45,7 @@ Above example will turn
   capacity: 5,
 }
 ```
+
 into
 
 ```ruby
