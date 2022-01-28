@@ -9,7 +9,7 @@ A DDD-oriented infrastructure for ruby/rails projects based on the dry-rb ecosys
 ## Installation
 
 Add this line to your application's Gemfile\
-`gem 'boxenn', ~>'3.0'`\
+`gem 'boxenn', '~>3.0'`\
 And then execute:\
 `$ bundle install`
 
