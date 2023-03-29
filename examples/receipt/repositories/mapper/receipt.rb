@@ -1,6 +1,6 @@
 module Receipt
   module Repositories::Mapper
-    class Receipt < MapperExtenstion
+    class Receipt < MapperExtension
       private
 
       def map

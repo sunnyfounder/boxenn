@@ -1,4 +1,4 @@
-class MapperExtenstion < Boxenn::Repositories::RecordMapper
+class MapperExtension < Boxenn::Repositories::RecordMapper
   def build(hash)
     result = batch_mapping(value: hash, mapper: map)
     result = custom_mapping(input: hash, result: result) if respond_to?(:custom_mapping, :include_private)
