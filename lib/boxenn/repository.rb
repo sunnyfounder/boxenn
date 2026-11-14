@@ -12,11 +12,13 @@ module Boxenn
 
     option :record_mapper, default: -> {}
 
-    def find_by_identity(**attributes)
+    # find_by_identity(id: 1) 或 find_by_identity({ id: 1 })（identity hash 常從 entity.primary_keys_hash 來）
+    def find_by_identity(identity = nil, **attributes)
+      attributes = identity.to_h.transform_keys(&:to_sym).merge(attributes) if identity
       non_primary_keys_provided = (attributes.keys - factory.primary_keys).empty? && (factory.primary_keys - attributes.keys).empty?
       raise InvalidPrimaryKey.new(class_name: self.class.name, provided: attributes.keys, required: factory.primary_keys) unless non_primary_keys_provided
 
-      record = retrieve_record(attributes)
+      record = retrieve_record(**attributes)
       record.nil? ? nil : build(record)
     end
 
@@ -45,7 +47,7 @@ module Boxenn
     def retrieve_record(**attributes)
       hash = attributes.slice(*factory.primary_keys)
       pk_hash = adapt(hash)
-      record = source_wrapper.find_by(pk_hash)
+      source_wrapper.find_by(pk_hash)
     end
 
     def save_record(primary_keys, attributes)
