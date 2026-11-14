@@ -11,12 +11,13 @@ Gem::Specification.new do |spec|
   spec.email       = ['oscarada87@gmail.com']
   spec.files       = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'boxenn.gemspec', 'lib/**/*']
   spec.homepage    = 'https://github.com/sunnyfounder/boxenn'
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.2'
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'dry-initializer', '~> 3.0'
   spec.add_runtime_dependency 'dry-monads', '~> 1.3'
-  spec.add_runtime_dependency 'dry-struct', '~> 1.3.0'
-  spec.add_runtime_dependency 'wisper', '2.0.0'
+  spec.add_runtime_dependency 'dry-struct', '>= 1.3', '< 2'
+  spec.add_development_dependency 'activejob', '>= 7.1'
+  spec.add_runtime_dependency 'wisper', '>= 2.0', '< 4'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

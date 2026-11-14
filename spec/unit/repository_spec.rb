@@ -91,6 +91,17 @@ RSpec.describe Boxenn::Repository do
 
         it { is_expected.to eq('entity') }
       end
+
+      context 'accepts the identity as a positional hash (e.g. entity.primary_keys_hash)' do
+        subject { repository.find_by_identity({ 'name' => 'Name' }) }
+
+        let(:repository) { Boxenn::Repository.new(source_wrapper: source_wrapper, factory: factory, record_mapper: record_mapper) }
+        let(:factory) { spy('factory', build: 'entity', primary_keys: [:name]) }
+        let(:source_wrapper) { spy('source wrapper', find_by: 'record') }
+        let(:record_mapper) { spy('record mapper', build: { name: 'Name' }) }
+
+        it { is_expected.to eq('entity') }
+      end
     end
   end
 
