@@ -20,15 +20,18 @@ jobs:
   rspec-unit:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        ruby: ['3.2', '4.0']
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6
+        ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
 
     - name: Run SSH Agent
@@ -37,11 +40,10 @@ jobs:
         ssh-private-key: ${{ secrets.ssh_private_key }}
 
     - name: Check for cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        upload-chunk-size: 3000000
         restore-keys: |
           ${{ runner.os }}-gems-
 
@@ -64,6 +66,6 @@ jobs:
         token: ${{ secrets.codecov_token }}
         directory: ./coverage
         fail_ci_if_error: true
-        flags: unittests
+        flags: unittests-ruby${{ matrix.ruby }}
         name: codecov-boxenn
         verbose: true

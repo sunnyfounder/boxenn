@@ -13,8 +13,8 @@ module Boxenn
     include Dry::Monads::Do
 
     # 位置參數與關鍵字參數原樣轉給 steps（Ruby 3 起兩者分開，不再自動互轉）
-    def call(*args, **kwargs)
-      Success(yield(steps(*args, **kwargs)))
+    def call(*, **)
+      Success(yield(steps(*, **)))
     rescue Dry::Monads::Do::Halt
       raise
     rescue StandardError => e

@@ -14,10 +14,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.2'
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'dry-initializer', '~> 3.0'
-  spec.add_runtime_dependency 'dry-monads', '~> 1.3'
-  spec.add_runtime_dependency 'dry-struct', '>= 1.3', '< 2'
+  spec.add_dependency 'dry-initializer', '~> 3.0'
+  spec.add_dependency 'dry-monads', '~> 1.3'
+  spec.add_dependency 'dry-struct', '>= 1.3', '< 2'
   spec.add_development_dependency 'activejob', '>= 7.1'
-  spec.add_runtime_dependency 'wisper', '>= 2.0', '< 4'
+  spec.add_dependency 'wisper', '>= 2.0', '< 4'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

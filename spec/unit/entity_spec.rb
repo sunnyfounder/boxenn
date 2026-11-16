@@ -48,8 +48,8 @@ RSpec.describe Boxenn::Entity do
             %i[id1 id2].freeze
           end
 
-          attribute :id1,                 Types::Integer.default(1)
-          attribute :id2,                 Types::Integer.default(2)
+          attribute :id1, Types::Integer.default(1)
+          attribute :id2, Types::Integer.default(2)
         end
 
         subject { entity.primary_keys_hash }
