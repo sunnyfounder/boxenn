@@ -66,10 +66,10 @@ module Boxenn
         end
       end
 
-      def perform(*args, **kwargs)
+      def perform(*, **)
         use_case = self.class.target.new
         use_case.job_id = job_id
-        result = use_case.call(*args, **kwargs)
+        result = use_case.call(*, **)
         return result unless result.respond_to?(:failure?) && result.failure?
 
         raise Failed, Array(result.failure).map(&:to_s).join(', ')

@@ -7,6 +7,7 @@ ActiveJob::Base.logger = Logger.new(nil)
 module JobSpec
   class Greet < Boxenn::UseCase
     include Boxenn::Job
+
     job_options queue: :general, retry: 2
 
     class << self
@@ -21,6 +22,7 @@ module JobSpec
 
   class NoRetry < Boxenn::UseCase
     include Boxenn::Job
+
     job_options retry: false
 
     def steps
@@ -30,6 +32,7 @@ module JobSpec
 
   class Parent < Boxenn::UseCase
     include Boxenn::Job
+
     job_options queue: :report, retry: false
 
     class << self
